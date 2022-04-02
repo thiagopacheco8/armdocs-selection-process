@@ -22,36 +22,45 @@ public class Network {
         return entity;
     }
 
-    public void addNode(Node node) throws EntityNameAlreadyInUseException {
+    public void addNode(String nodeName) throws EntityNameAlreadyInUseException {
         //Check if the name is already in use
-        if(this.getEntityByName(node.getName()) != null){
-            throw new EntityNameAlreadyInUseException(node.getName());
+        if(this.getEntityByName(nodeName) != null){
+            throw new EntityNameAlreadyInUseException(nodeName);
         }
-        this.entities.add(node);
+        this.entities.add(new Node(nodeName));
     }
 
-    public void addLink(Link link) throws EntityNameAlreadyInUseException, EntityNotFoundException {
+    public void addLink(String linkName, String sourceNodeName, int sourcePort, String targetNodeName, int targetPort)
+            throws EntityNameAlreadyInUseException, EntityNotFoundException {
         //Check if the name is already in use
-        if(this.getEntityByName(link.getName()) != null){
-            throw new EntityNameAlreadyInUseException(link.getName());
+        if(this.getEntityByName(linkName) != null){
+            throw new EntityNameAlreadyInUseException(linkName);
         }
 
        //Check nodes are in the network
-        Node startNode = this.getNodeByName(link.getStartNode().getName());
-        Node endNode = this.getNodeByName(link.getEndNode().getName());
+        Node startNode = this.getNodeByName(sourceNodeName);
+        Node endNode = this.getNodeByName(targetNodeName);
 
-        this.entities.add(link);
+        this.entities.add(new Link(linkName, startNode, sourcePort, endNode, targetPort));
     }
 
-    public void addCircuit(Circuit circuit) throws EntityNotFoundException {
-        for(Node node:circuit.getNodes()){
-            this.getNodeByName(node.getName());
+    public void addCircuit(String circuitName, String... nodeName) throws EntityNotFoundException {
+        List<Node> nodes = new ArrayList<Node>();
+        for(String node:nodeName){
+            nodes.add(this.getNodeByName(node));
         }
-        this.entities.add(circuit);
+        this.entities.add(new Circuit(circuitName, nodes));
     }
 
-    public void addNIC(NIC nic, String nodeName) throws EntityNotFoundException {
+    public void addNIC(String nicName, String nodeName) throws EntityNotFoundException, EntityNameAlreadyInUseException {
+        //Check if the name is already in use
+        if(this.getEntityByName(nicName) != null){
+            throw new EntityNameAlreadyInUseException(nicName);
+        }
+
         Node node = this.getNodeByName(nodeName);
+        NIC nic = new NIC(nicName);
+
         node.addNetworkInterfaceCard(nic);
         this.entities.add(nic);
     }

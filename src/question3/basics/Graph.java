@@ -140,4 +140,12 @@ public class Graph {
         }
     }
 
+    private void printAllPaths(ArrayList<ArrayList<Path>> paths){
+        paths.stream().forEach(p-> {
+            System.out.print("Path = [");
+            p.stream().forEach(p2-> System.out.println(p2.getNode().getName() + ","));
+            System.out.println("]");
+        });
+    }
+
 }
