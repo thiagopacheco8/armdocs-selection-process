@@ -1,18 +1,5 @@
 package question1.tests;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import question1.basics.Link;
-import question1.basics.NIC;
-import question1.basics.Network;
-import question1.basics.Node;
-import question1.exceptions.EntityNameAlreadyInUseException;
-import question1.exceptions.EntityNotFoundException;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 public class NetworkTest {
 
     //Exception messages

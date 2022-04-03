@@ -16,4 +16,5 @@ public class Path {
     public int getDistance() {
         return distance;
     }
+
 }

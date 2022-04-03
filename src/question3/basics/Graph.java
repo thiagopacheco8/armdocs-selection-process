@@ -75,7 +75,7 @@ public class Graph {
     }
 
     public int getShortestRouteLenght(String source, String target){
-        ArrayList<ArrayList<Path>> allPossiblePaths = this.getAllPossiblePathsForTarget(source,target);
+        ArrayList<ArrayList<Path>> allPossiblePaths = this.getShortestPathsForTarget(source,target);
 
         return allPossiblePaths.stream().mapToInt(
                 p -> p.stream().mapToInt(p2->p2.getDistance()).sum()
@@ -108,6 +108,19 @@ public class Graph {
         return allPaths;
     }
 
+    private ArrayList<ArrayList<Path>> getShortestPathsForTarget(String source, String target){
+        Town sourceTown = this.searchTown(source);
+
+        ArrayList<ArrayList<Path>> allPaths = new ArrayList<ArrayList<Path>>();
+        allPaths = new ArrayList<ArrayList<Path>>();
+        ArrayList<Path> initialPath = new ArrayList<Path>();
+        initialPath.add(new Path(sourceTown,0));
+
+        this.navigateAllPossiblePathsToTarget(initialPath, target, allPaths);
+
+        return allPaths;
+    }
+
     private ArrayList<Town> navigateAllPossiblePaths(ArrayList<Town> currentPath, int numberOfStops, ArrayList<ArrayList<Town>> allPaths) {
         if(currentPath.size() >= numberOfStops){
             allPaths.add(currentPath);
@@ -125,7 +138,7 @@ public class Graph {
     }
 
     private ArrayList<Path> navigateAllPossiblePathsToTarget(ArrayList<Path> currentPath, String target, ArrayList<ArrayList<Path>> allPaths) {
-        if(currentPath.size()>1 && currentPath.get(currentPath.size()-1).getNode().getName().equals(target)){
+        if(currentPath.get(currentPath.size()-1).getNode().getName().equals(target)){
             allPaths.add(currentPath);
             return currentPath;
         }
@@ -135,6 +148,32 @@ public class Graph {
                 ArrayList<Path> newPath = new ArrayList<Path>(currentPath);
                 newPath.add(possiblePath);
                 this.navigateAllPossiblePathsToTarget(newPath, target, allPaths);
+            }
+            return currentPath;
+        }
+    }
+
+    private ArrayList<Path> navigateShortestPathsToTarget(ArrayList<Path> currentPath, String target, ArrayList<ArrayList<Path>> allPaths) {
+        if(currentPath.size()>1 && currentPath.get(currentPath.size()-1).getNode().getName().equals(target)){
+            allPaths.add(currentPath);
+            return currentPath;
+        }
+        else
+        {
+            int shortestCurrentPath = Integer.MAX_VALUE;
+            Path nextPathEqualsTarget = currentPath.get(currentPath.size()-1).getNode().getPaths().stream().filter(p->p.getNode().getName().equals(target)).findFirst().orElse(null);
+            if(nextPathEqualsTarget != null){
+               shortestCurrentPath = currentPath.stream().mapToInt(p->p.getDistance()).sum();
+               shortestCurrentPath += nextPathEqualsTarget.getDistance();
+            }
+
+            for(Path possiblePath:currentPath.get(currentPath.size()-1).getNode().getPaths()){
+                ArrayList<Path> newPath = new ArrayList<Path>(currentPath);
+                newPath.add(possiblePath);
+                int pathSize = newPath.stream().mapToInt(p->p.getDistance()).sum();
+                if(pathSize < shortestCurrentPath){
+                    this.navigateAllPossiblePathsToTarget(newPath, target, allPaths);
+                }
             }
             return currentPath;
         }
