@@ -38,7 +38,8 @@ public class Main {
             printOutput(6, graph.getNumberOfPathsWithMaxSize("C", "C", 3));
             printOutput(7, graph.getNumberOfPathsWithSize("A", "C", 4));
             printOutput(8, graph.getShortestRouteLenght("A", "C"));
-            printOutput(9, graph.getShortestRouteLenght("B", "B"));
+            //printOutput(9, graph.getShortestRouteLenght("B", "B"));
+            printOutput(10, graph.getNumberOfRouteWithMaxLenght("C", "C",30));
 
 
         }catch(FileNotFoundException e){
